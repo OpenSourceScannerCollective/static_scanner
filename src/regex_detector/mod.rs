@@ -59,14 +59,14 @@ struct Variables {
 }
 
 #[derive(Debug)]
-pub struct Scan {
+pub struct Pattern {
     name: String,
     secret_regex: Vec<Regex>,
     variables: Vec<Variables>,
     keys_required: Vec<String>,
 }
 
-impl Scanner for Scan {
+impl Scanner for Pattern {
     #[inline(always)]
     fn scan(&self, s: &str, file: &str, line_ends: &impl LinesEndsProvider) -> Result<Vec<Secret>, String> {
         let mut detector = Detection::new(self, s, file, line_ends);
@@ -98,7 +98,7 @@ struct Detection<'a, T: LinesEndsProvider> {
     buf: &'a str,
     file: &'a str,
     unique: HashMap<SecretPosition, SecretItem<'a>>,
-    scanner: &'a Scan,
+    scanner: &'a Pattern,
     line_ends: &'a T,
 }
 
@@ -106,7 +106,7 @@ impl<'a, T> Detection<'a, T>
 where T: LinesEndsProvider,
 {
     #[inline(always)]
-    fn new(s: &'a Scan, buf: &'a str, file: &'a str, line_ends: &'a T) -> Self {
+    fn new(s: &'a Pattern, buf: &'a str, file: &'a str, line_ends: &'a T) -> Self {
         Self {
             buf,
             file,
@@ -323,7 +323,7 @@ impl Builder {
     /// Tries to build a scanner.
     ///
     #[inline(always)]
-    pub fn try_build_scanner(&self) -> Result<Scan, String> {
+    pub fn try_build_scanner(&self) -> Result<Pattern, String> {
         let mut variables_schema = Vec::new();
         for variables in self.variables.iter() {
             if variables.0.len() > 0 && variables.1.len() > 0 {
@@ -365,7 +365,7 @@ impl Builder {
             }
         }
 
-        Ok(Scan {
+        Ok(Pattern {
             name: match &self.name {
                 Some(name) => name.clone(),
                 None => "".to_string(),
@@ -377,7 +377,7 @@ impl Builder {
    }
 }
 
-impl TryFrom<&Schema> for Scan {
+impl TryFrom<&Schema> for Pattern {
     type Error = Error;
 
     #[inline(always)]

@@ -1,4 +1,4 @@
-use crate::regex_detector::{Schema, Scanner, Scan};
+use crate::regex_detector::{Schema, Scanner, Pattern};
 use crate::lines::LinesEnds;
 use crate::result::Secret;
 use std::io::Result as IoResult;
@@ -6,7 +6,7 @@ use std::path::Path;
 
 #[derive(Debug)]
 enum ScannerWrapper {
-    Regex(Scan),
+    Regex(Pattern),
 }
 
 impl Scanner for ScannerWrapper {
