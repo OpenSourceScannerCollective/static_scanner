@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter, Result};
+use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod mod_test;
@@ -24,8 +25,6 @@ pub enum DecoderType {
     Jwt,
 }
 
-
-use serde::{Deserialize, Serialize};
 /// Result of the secret finding.
 ///
 #[derive(Debug, Serialize, Deserialize, Clone)]

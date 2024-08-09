@@ -43,75 +43,256 @@
   secret_regexes:
     - ([0-9a-zA-Z\+\/=]{64}(\n|\r|\r\n))*([0-9a-zA-Z\+\/=]{1,63}(\n|\r|\r\n))
 
-- name: "Authorization HTTP Header"
+- name: "Proxy-Authorization HTTP Header"
   secret_regexes:
-    - Proxy-Authorization([\s?\\]+Basic[\s?\\]+[-A-Za-z0-9+/]*={0,3})
-    - Proxy-Authorization([\s?\\]+Basic[\s?\\]+[0-9A-Fa-f]*)
-    - Authorization([\s?\\]+Basic[\s?\\]+[-A-Za-z0-9+/]*={0,3})
-    - Authorization([\s?\\]+Basic[\s?\\]+[0-9A-Fa-f]*)
-    - Authorization([\s?\\]+Bearer[\s?\\]+[\w-]*\.[\w-]*\.[\w-]*)
-    - Authorization([\s?\\]+Bearer[\s?\\]+[\w=/-]+)
-    - Authorization([\s?\\]+Bearer[\s?\\]+[-A-Za-z0-9+/]*={0,3})
-    - Authorization([\s?\n]Digest[\s?\\]+[\w]*=[\w=,"@.\s?]*)
-    - Authorization([\s?\n]Digest[\s?\\]+[\w]*=[\w=',/@.\s?]*)
-    - Authorization([\s?\\]+DPoP[\s\w~\.\-\n\r]*)
-    - Authorization([\s?\\]+GNAP[\s?\\]+[\w-]*\.[\w-]*\.[\w-]*)
-    - Authorization([\s?\\]+GNAP[\s?\\]+[\w-]*\.[\w-]*)
-    - Authorization([\s?\\]+GNAP[\s?\\]+[-A-Za-z0-9+/]*={0,3})
-    - Authorization([\s?\\]+GNAP[\s?\\]+[-A-Z0-9+/]*)
-    - Authorization([\s?\\]+HOBA[\s?\\]+result="[\s\S]*?)
-    - Authorization([\s?\\]+HOBA[\s?\\]+result='[\s\S]*?)
-    - Authorization([\s?\\]+Mutual[\s?\\]+[\w]*=[\w=,"@.\s?]*)
-    - Authorization([\s?\\]+Mutual[\s?\\]+[\w]*=[\w=',/@.\s?]*)
-    - Authorization([\s?\\]+Negotiate[\s?\\]+[0-9A-Fa-f]*)
-    - Authorization([\s?\\]+OAuth[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?]*oauth[\w]*="[\w=,"-/@.\s?]*")
-    - Authorization([\s?\\]+PrivateToken[\s?\\]+token="[\s\S]*?")
-    - Authorization([\s?\\]+PrivateToken[\s?\\]+token=\'[\s\S]*?\')
-    - Authorization([\s?\\]+SCRAM-SHA-1[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?*\n]*data=[\w=,-/@.\s?]*[,\s?*\n]*)
-    - Authorization([\s?\n]SCRAM-SHA-256[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?*\n]*data=[\w=,-/@.\s?]*[,\s?*\n]*)
-    - Authorization([\s?\\]+vapid[\s?\\]+[t]=[\w/@.\s?\|-]+,[\s?\\]+[k]=[\w/@.\s?\|-]+)
-    - Authorization([\s?\\]+AWS4-HMAC-SHA256[\s?\\]+Credential=[\w=/-]+)
-    - Authorization([\s?\\]+token[\s?\\]+[\w=/-]+)
-    - Authorization([\s?\\]+JWT[\s?\w.\\]+)
-    - Authorization([\s?\\]+NTLM[\s?\\]+[-A-Za-z0-9=]+)
-    - Authorization([\s?\\]+Firebase[\s?\w.\\]+)
-    - Cookie([\s?\\]+session=[\w=/-]+)
-    - Circle-Token([\s?\\]+[\w=/-]+)
-    - Cookie([\s?\\]+session=[\w=/-]+)
-    - X-Private-Token([\s?\\]+private_[\w_=]+)
-    - Private-Token([\s?\\]+[\w=/-]+)
-    - SSL-Client-Cert([\s?\\]+[\w=/-]+)
-    - X-API-Key([\s?\\]+[\w=/-]+)
-    - X-App-Token([\s?\\]+[\w=/-]+)
-    - X-Auth-Token([\s?\\]+[\w=/-]+)
-    - X-CSRF-Token([\s?\\]+[\w=/-]+)
-    - X-Shopify-Access-Token([\s?\\]+shpat_[\w=/-]+)
-    - API-Key([\s?\\]+[\w=/-]+)
-    - X-Access-Token([\s?\\]+[\w=/-]+)
-    - JWT([\s?]+[\s\w~\.\-\n\r]+)
-    - X-Client-Id([\s?\\]+client_[\w]+)
-    - X-Client-Secret([\s?\\]+secret_[\w]+)
-    - X-Forwarded-Access-Token([\s?\w.\\]+)
-    - X-Signature([\s?\\]+hash_[0-9A-Fa-f]+)
-    - X-Hub-Signature([\s?\\]+sha1=[0-9A-Fa-f]+)
-    - X-Auth-User([\s?\\]+[\w_=]+)
-    - X-Auth-Pass([\s?\\]+[\w_=]+)
-    - X-Auth([\s?\\]+[\w_=]+)
-    - X-Auth-Key([\s?\\]+key_[\w_=]+)
-    - X-Session-Key([\s?\\]+session_[\w_=]+)
-    - X-Secret-Token([\s?\\]+secret_[\w_=]+)
-    - X-User-Token([\s?\\]+user_[\w_=]+)
-    - X-Refresh-Token([\s?\\]+refresh_[\w_=]+)
-    - X-Custom-Auth([\s?\\]+custom_[\w_=]+)
-    - X-Device-Token([\s?\\]+device_[\w_=]+)
-    - X-Application-Key([\s?\\]+app_[\w_=]+)
-    - X-Authentication([\s?\\]+auth_[\w_=]+)
-    - X-OAuth-Token([\s?\\]+oauth_[\w_=]+)
-    - X-Login-Token([\s?\\]+login_[\w_=]+)
-    - X-Identity([\s?\\]+identity_[\w_=]+)
-    - X-Credential([\s?\\]+cred_[\w_=]+)
-    - X-Secret([\s?\\]+secret_[\w_=]+)
-    - X-Key([\s?\\]+key_[\w_=]+)
-    - X-Access([\s?\\]+access_[\w_=]+)
-    - X-Signature-Key([\s?\\]+sigkey_[\w_=]+)
-    - X-Verification-Key([\s?\\]+verkey_[\w_=]+)
+    - (?i)Proxy-Authorization:([\s?\\]+Basic[\s?\\]+[-A-Za-z0-9+/]*={0,3})
+    - (?i)Proxy-Authorization:([\s?\\]+Basic[\s?\\]+[0-9A-Fa-f]*)
+
+- name: "Authorization Basic HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]+Basic[\s?\\]+[-A-Za-z0-9+/]*={0,3})
+    - (?i)Authorization:([\s?\\]+Basic[\s?\\]+[0-9A-Fa-f]*)
+
+- name: "Authorization Bearer HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]+Bearer[\s?\\]+[\w-]*\.[\w-]*\.[\w-]*)
+    - (?i)Authorization:([\s?\\]+Bearer[\s?\\]+[\w=/-]+)
+    - (?i)Authorization:([\s?\\]+Bearer[\s?\\]+[-A-Za-z0-9+/]*={0,3})
+
+- name: "Authorization Digest HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\n]Digest[\s?\\]+[\w]*=[\w=,"@.\s?]*)
+    - (?i)Authorization:([\s?\n]Digest[\s?\\]+[\w]*=[\w=',/@.\s?]*)
+
+- name: "Authorization DPoP HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*DPoP[\s\w~\.\-\n\r]*)
+
+- name: "Authorization GNAP HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*GNAP[\s?\\]+[\w-]*\.[\w-]*\.[\w-]*)
+    - (?i)Authorization:([\s?\\]*GNAP[\s?\\]+[\w-]*\.[\w-]*)
+    - (?i)Authorization:([\s?\\]*GNAP[\s?\\]+[-A-Za-z0-9+/]*={0,3})
+    - (?i)Authorization:([\s?\\]*GNAP[\s?\\]+[-A-Z0-9+/]*)
+
+- name: "Authorization HOBA HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*HOBA[\s?\\]+result="[\s\S]*?)
+    - (?i)Authorization:([\s?\\]*HOBA[\s?\\]+result='[\s\S]*?)
+
+- name: "Authorization Matual HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*Mutual[\s?\\]+[\w]*=[\w=,"@.\s?]*)
+    - (?i)Authorization:([\s?\\]*Mutual[\s?\\]+[\w]*=[\w=',/@.\s?]*)
+
+- name: "Authorization Negotiate HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*Negotiate[\s?\\]+[0-9A-Fa-f]*)
+
+- name: "Authorization OAuth HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*OAuth[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?]*oauth[\w]*="[\w=,"-/@.\s?]*")
+
+- name: "Authorization PrivateToken HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*PrivateToken[\s?\\]+token="[\s\S]*?")
+    - (?i)Authorization:([\s?\\]*PrivateToken[\s?\\]+token=\'[\s\S]*?\')
+
+- name: "Authorization SCRAM-SHA-1 HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*SCRAM-SHA-1[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?*\n]*data=[\w=,-/@.\s?]*[,\s?*\n]*)
+
+- name: "Authorization SCRAM-SHA-256 HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\n]*SCRAM-SHA-256[\s?\\]+realm="[\w=,-/@.\s?]*"[,\s?*\n]*data=[\w=,-/@.\s?]*[,\s?*\n]*)
+
+- name: "Authorization PrivateToken vapid Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*vapid[\s?\\]+[t]=[\w/@.\s?\|-]+,[\s?\\]+[k]=[\w/@.\s?\|-]+)
+
+- name: "Authorization AWS4-HMAC-SHA256 HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*AWS4-HMAC-SHA256[\s?\\]+Credential=[\w=/-]+)
+
+- name: "Authorization token HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*token[\s?\\]+[\w=/-]+)
+
+- name: "Authorization JWT HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*JWT[\s?\w.\\]+)
+
+- name: "Authorization NTLM HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*NTLM[\s?\\]+[-A-Za-z0-9=]+)
+
+- name: "Authorization Firebase HTTP Header"
+  secret_regexes:
+    - (?i)Authorization:([\s?\\]*Firebase[\s?\w.\\]+)
+
+- name: "Cookie HTTP Header"
+  secret_regexes:
+    - (?i)Cookie:([\s?\\]*session=[\w=/-]+)
+
+- name: "Circle-Token HTTP Header"
+  secret_regexes:
+    - (?i)Circle-Token:([\s?\\]*[\w=/-]+)
+
+- name: "X-Private-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Private-Token:([\s?\\]*private_[\w_=]+)
+
+- name: "Private-Token HTTP Header"
+  secret_regexes:
+    - (?i)Private-Token:([\s?\\]*[\w=/-]+)
+
+- name: "SSL-Client-Cert HTTP Header"
+  secret_regexes:
+    - (?i)SSL-Client-Cert:([\s?\\]*[\w=/-]+)
+
+- name: "X-API-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-API-Key:([\s?\\]*[\w=/-]+)
+
+- name: "X-App-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-App-Token:([\s?\\]+[\w=/-]+)
+
+- name: "X-Auth-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth-Token:([\s?\\]*[\w=/-]+)
+
+- name: "X-Auth-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth-Token:([\s?\\]*[\w=/-]+)
+
+- name: "X-Auth-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth-Token:([\s?\\]*[\w=/-]+)
+
+- name: "X-CSRF-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-CSRF-Token:([\s?\\]*[\w=/-]+)
+
+- name: "X-Shopify-Access-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Shopify-Access-Token:([\s?\\]*shpat_[\w=/-]+)
+
+- name: "API-Key HTTP Header"
+  secret_regexes:
+    - (?i)API-Key:([\s?\\]*[\w=/-]+)
+
+- name: "X-Access-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Access-Token:([\s?\\]*[\w=/-]+)
+
+- name: "JWT HTTP Header"
+  secret_regexes:
+    - (?i)JWT:([\s?]*[\s\w~\.\-\n\r]+)
+
+- name: "X-Client-Id HTTP Header"
+  secret_regexes:
+    - (?i)X-Client-Id:([\s?\\]*client_[\w]+)
+
+- name: "X-Client-Secret HTTP Header"
+  secret_regexes:
+    - (?i)X-Client-Secret:([\s?\\]*secret_[\w]+)
+
+- name: "X-Forwarded-Access-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Forwarded-Access-Token:([\s?\w.\\]+)
+
+- name: "X-Signature HTTP Header"
+  secret_regexes:
+    - (?i)X-Signature:([\s?\\]*hash_[0-9A-Fa-f]+)
+
+- name: "X-Hub-Signature HTTP Header"
+  secret_regexes:
+    - (?i)X-Hub-Signature:([\s?\\]*sha1=[0-9A-Fa-f]+)
+
+- name: "X-Auth-User HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth-User:([\s?\\]*[\w_=]+)
+
+- name: "X-Auth-Pass HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth-Pass:([\s?\\]*[\w_=]+)
+
+- name: "X-Auth HTTP Header"
+  secret_regexes:
+    - (?i)X-Auth:([\s?\\]*[\w_=]+)
+
+- name: "X-Session-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-Session-Key:([\s?\\]*session_[\w_=]+)
+
+- name: "X-Secret-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Secret-Token:([\s?\\]*secret_[\w_=]+)
+
+- name: "X-Secret-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Secret-Token:([\s?\\]*secret_[\w_=]+)
+
+- name: "X-User-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-User-Token:([\s?\\]*user_[\w_=]+)
+
+- name: "X-Refresh-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Refresh-Token:([\s?\\]*refresh_[\w_=]+)
+
+- name: "X-Custom-Auth HTTP Header"
+  secret_regexes:
+    - (?i)X-Custom-Auth:([\s?\\]*custom_[\w_=]+)
+
+- name: "X-Device-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Device-Token:([\s?\\]*device_[\w_=]+)
+
+- name: "X-Application-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-Application-Key:([\s?\\]*app_[\w_=]+)
+
+- name: "X-Authentication HTTP Header"
+  secret_regexes:
+
+- name: "X-Authentication HTTP Header"
+  secret_regexes:
+    - (?i)X-Authentication:([\s?\\]*auth_[\w_=]+)
+
+- name: "X-OAuth-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-OAuth-Token:([\s?\\]*oauth_[\w_=]+)
+
+- name: "X-Login-Token HTTP Header"
+  secret_regexes:
+    - (?i)X-Login-Token:([\s?\\]*login_[\w_=]+)
+
+- name: "X-Identity HTTP Header"
+  secret_regexes:
+    - (?i)X-Identity:([\s?\\]*identity_[\w_=]+)
+
+- name: "X-Credential HTTP Header"
+  secret_regexes:
+    - (?i)X-Credential:([\s?\\]*cred_[\w_=]+)
+
+- name: "X-Secret HTTP Header"
+  secret_regexes:
+    - (?i)X-Secret:([\s?\\]*secret_[\w_=]+)
+
+- name: "X-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-Key:([\s?\\]*key_[\w_=]+)
+
+- name: "X-Access HTTP Header"
+  secret_regexes:
+    - (?i)X-Access:([\s?\\]*access_[\w_=]+)
+
+- name: "X-Signature-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-Signature-Key:([\s?\\]*sigkey_[\w_=]+)
+
+- name: "X-Verification-Key HTTP Header"
+  secret_regexes:
+    - (?i)X-Verification-Key:([\s?\\]*verkey_[\w_=]+)
