@@ -1,6 +1,8 @@
 use clap::{arg, command, error::ErrorKind, value_parser, Command, Error};
-use crossbeam_channel::{select, unbounded, Receiver, Sender};
-use static_detector::{result::Secret, executor::Executor};
+use crossbeam_channel::{unbounded, Receiver, Sender};
+use static_detector::result::Secret;
+use static_detector::executor::Executor;
+use static_detector::reporter::{Reporter, Output, new as new_reporter};
 use crossbeam_utils::sync::WaitGroup;
 use std::path::PathBuf;
 use std::thread::spawn;
@@ -53,29 +55,12 @@ fn main() {
                 matches.get_one::<PathBuf>("config"),
                 matches.get_one::<String>("omit"),
             ) {
-                Ok(s) => println!("[ 📋 Finished ]\n{s}"),
+                Ok(s) => println!("[ 🎉 Success ]\n{s}"),
                 Err(e) => println!("[ 🤷 Failure ]:\n{}", e.to_string()),
             }
         }
         _ => println!("Unknown command. Please check help."),
     };
-}
-
-fn stdout_print(ch: Receiver<Option<Secret>>) {
-    println!("[ 📋 SCANNING REPORT: ]");
-    'printer: loop {
-        select! {
-            recv(ch) -> message => match message {
-                Ok(m) => match m {
-                    Some(m) => {
-                        println!("{}", m);
-                    },
-                    None => break 'printer,
-                },
-                Err(_) => break 'printer,
-            },
-        }
-    }
 }
 
 fn scan(
@@ -94,8 +79,10 @@ fn scan(
 
     let wg_print = WaitGroup::new();
     let wg_print_clone = wg_print.clone();
+
     spawn(move || {
-        stdout_print(rx);
+        let mut reporter = new_reporter(Output::StdOut);
+        reporter.receive(rx);
         drop(wg_print_clone);
     });
 
@@ -104,5 +91,5 @@ fn scan(
     wg_print.wait();
 
     let duration = start.elapsed();
-    return Ok(format!("Scanning took {} milliseconds.\n", duration.as_millis()).to_owned());
+    return Ok(format!("Proccessing took {} milliseconds.\n", duration.as_millis()).to_owned());
 }

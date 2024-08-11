@@ -6,7 +6,7 @@ mod mod_test;
 
 /// Describes detector type.
 ///
-#[derive(Debug, Serialize, Deserialize, Display, Clone)]
+#[derive(Debug, Serialize, Deserialize, Display, Clone, PartialEq, Eq, Hash)]
 #[display(fmt = "{}")]
 pub enum DetectorType {
     Unique(String)
@@ -14,7 +14,7 @@ pub enum DetectorType {
 
 /// Describes decoder type.
 ///
-#[derive(Debug, Serialize, Deserialize, Display, Clone)]
+#[derive(Debug, Serialize, Deserialize, Display, Clone, PartialEq, Eq, Hash)]
 #[display(fmt = "{}")]
 pub enum DecoderType {
     #[display(fmt="Plane")]
